@@ -1,9 +1,14 @@
+# Setup
 
-https://the-one-api.dev/sign-up
+You will need a API key to use this SDK. You can get one by [signing up](https://the-one-api.dev/sign-up). Once signed up, export the following environment variable with the value of your key. You can assign it in a `.env` file as well.
 
-Authorization: Bearer your-api-key-123
+```bash
+export LOTR_API_ACCESS_TOKEN=your-api-key-123
+```
 
-Only the /book endpoint is available without authentication
+> [!WARNING]
+> Access for authenticated users to all endpoints is limited to 100 requests every 10 minutes. Be fair!
+
 
 
 # TODO
@@ -37,15 +42,19 @@ Example
 match, negate match
 /character?name=Gandalf
 /character?name!=Frodo
+
 include, exclude
 /character?race=Hobbit,Human
 /character?race!=Orc,Goblin
+
 exists, doesn't exists
 /character?name
 /character?!name
+
 regex
 /character?name=/foot/i
 /character?name!=/foot/i
+
 less than, greater than or equal to
 /movie?budgetInMillions<100
 
@@ -55,7 +64,7 @@ less than, greater than or equal to
 
 # How to Use
 
-This is all made up!
+TODO: Fill in with real sdk syntax
 
 ```typescript
 import {lotr} from 'lotr';
