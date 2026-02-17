@@ -1,4 +1,3 @@
-import { z } from "zod";
 import { LotRClient, logger } from "../client";
 import { ListParams, toParams } from "../schemas";
 import {
@@ -8,7 +7,11 @@ import {
   MovieListResponse,
   MovieListResponseSchema,
 } from "../schemas/movie";
-import { QuoteListResponse, QuoteListResponseSchema } from "../schemas/quote";
+import {
+  QuoteKeySchema,
+  QuoteListResponse,
+  QuoteListResponseSchema,
+} from "../schemas/quote";
 
 export class Movie {
   protected baseEndpoint = "movie";
@@ -36,7 +39,7 @@ export class Movie {
     this.log.info({ movieId, listParams }, "Listing movie quotes");
     const listResponse = await this.client.get(
       `${this.baseEndpoint}/${movieId}/quote`,
-      listParams ? toParams(listParams, z.string()) : [],
+      listParams ? toParams(listParams, QuoteKeySchema) : [],
     );
     const response = QuoteListResponseSchema.parse(listResponse);
     this.log.info({ total: response.total }, "Movie quotes listed");
