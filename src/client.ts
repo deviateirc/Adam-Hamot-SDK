@@ -1,7 +1,6 @@
 import { config } from "dotenv";
 import pino from "pino";
 import { request } from "undici";
-import { Movie } from "./models/movie";
 
 config();
 
@@ -60,15 +59,3 @@ export class LotRClient {
     return response;
   }
 }
-
-const main = async () => {
-  const client = new LotRClient();
-  const movie = new Movie(client);
-  // TODO: Fix key name not loading by language server
-  const data = await movie.listQuotes("5cd95395de30eff6ebccde5c", {
-    sort: { key: "asdf", order: "asc" },
-  });
-  console.log(data);
-};
-
-main();
