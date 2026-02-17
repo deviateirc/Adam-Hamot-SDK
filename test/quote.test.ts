@@ -1,12 +1,9 @@
-import { describe, it, mock, beforeEach } from "node:test";
+import { describe, it, mock, type Mock, beforeEach } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { join, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
+import { join } from "node:path";
 import { LotRClient } from "../src/client";
 import { Quote } from "../src/models/quote";
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const quoteFixture = JSON.parse(
   readFileSync(join(__dirname, "fixtures/quote.json"), "utf-8"),
@@ -72,7 +69,7 @@ describe("Quote", () => {
         ],
       });
 
-      const getCall = (mockClient.get as ReturnType<typeof mock.fn>).mock
+      const getCall = (mockClient.get as unknown as Mock<(...args: unknown[]) => unknown>).mock
         .calls[0];
       assert.equal(getCall.arguments[0], "quote");
       const params = getCall.arguments[1] as string[];
@@ -87,7 +84,7 @@ describe("Quote", () => {
         sort: { key: "dialog", order: "asc" },
       });
 
-      const getCall = (mockClient.get as ReturnType<typeof mock.fn>).mock
+      const getCall = (mockClient.get as unknown as Mock<(...args: unknown[]) => unknown>).mock
         .calls[0];
       const params = getCall.arguments[1] as string[];
       assert.ok(params.includes("sort=dialog:asc"));
@@ -121,7 +118,7 @@ describe("Quote", () => {
 
       await quote.getQuote("5cd96e05de30eff6ebcce7e9");
 
-      const getCall = (mockClient.get as ReturnType<typeof mock.fn>).mock
+      const getCall = (mockClient.get as unknown as Mock<(...args: unknown[]) => unknown>).mock
         .calls[0];
       assert.equal(getCall.arguments[0], "quote/5cd96e05de30eff6ebcce7e9");
     });

@@ -16,7 +16,7 @@ export abstract class BaseModel<TDoc, TKey extends string, TListResponse> {
     this.log = logger.child({ module: moduleName });
   }
 
-  async list(listParams?: ListParams<TKey>): Promise<TListResponse> {
+  protected async list(listParams?: ListParams<TKey>): Promise<TListResponse> {
     this.log.info({ listParams }, "Listing");
     const listResponse = await this.client.get(
       this.baseEndpoint,
@@ -28,7 +28,7 @@ export abstract class BaseModel<TDoc, TKey extends string, TListResponse> {
     return response;
   }
 
-  async get(id: string): Promise<TDoc> {
+  protected async get(id: string): Promise<TDoc> {
     this.log.info({ id }, "Getting");
     const rawResponse = await this.client.get(`${this.baseEndpoint}/${id}`);
     const response = this.listResponseSchema.parse(rawResponse);

@@ -1,12 +1,9 @@
-import { describe, it, mock, beforeEach } from "node:test";
+import { describe, it, mock, type Mock, beforeEach } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { join, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
+import { join } from "node:path";
 import { LotRClient } from "../src/client";
 import { Movie } from "../src/models/movie";
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const movieFixture = JSON.parse(
   readFileSync(join(__dirname, "fixtures/movie.json"), "utf-8"),
@@ -75,7 +72,7 @@ describe("Movie", () => {
         pagination: { limit: 5, page: 2 },
       });
 
-      const getCall = (mockClient.get as ReturnType<typeof mock.fn>).mock
+      const getCall = (mockClient.get as unknown as Mock<(...args: unknown[]) => unknown>).mock
         .calls[0];
       assert.equal(getCall.arguments[0], "movie");
       const params = getCall.arguments[1] as string[];
@@ -110,7 +107,7 @@ describe("Movie", () => {
 
       await movie.getMovie("5cd95395de30eff6ebccde5c");
 
-      const getCall = (mockClient.get as ReturnType<typeof mock.fn>).mock
+      const getCall = (mockClient.get as unknown as Mock<(...args: unknown[]) => unknown>).mock
         .calls[0];
       assert.equal(getCall.arguments[0], "movie/5cd95395de30eff6ebccde5c");
     });
@@ -142,7 +139,7 @@ describe("Movie", () => {
 
       await movie.listQuotes("5cd95395de30eff6ebccde5d");
 
-      const getCall = (mockClient.get as ReturnType<typeof mock.fn>).mock
+      const getCall = (mockClient.get as unknown as Mock<(...args: unknown[]) => unknown>).mock
         .calls[0];
       assert.equal(
         getCall.arguments[0],
