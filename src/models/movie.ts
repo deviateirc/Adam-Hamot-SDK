@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { LotRClient } from "../client";
+import { LotRClient, logger } from "../client";
 import { ListParams, ResponseSchema, toParams } from "../schemas";
 
 export const MovieSchema = z
@@ -41,17 +41,20 @@ export interface IMovie extends z.output<typeof MovieSchema> {}
 
 export class Movie {
   protected baseEndpoint = "movie";
+  private log = logger.child({ module: "Movie" });
 
   constructor(private client: LotRClient) {}
 
   async listMovies(
     listParams?: ListParams<MovieKey>,
   ): Promise<MovieListResponse> {
+    this.log.info({ listParams }, "Listing movies");
     const listResponse = await this.client.get(
       this.baseEndpoint,
       listParams ? toParams(listParams, MovieKeySchema) : [],
     );
     const response = MovieListResponseSchema.parse(listResponse);
+    this.log.info({ total: response.total }, "Movies listed");
     return response;
   }
 
