@@ -2,7 +2,7 @@ import { z } from "zod";
 import { LotRClient, logger } from "../client";
 import { ListParams, ResponseSchema, toParams } from "../schemas";
 
-export const MovieSchema = z
+const MovieSchema = z
   .object({
     _id: z.string(),
 
@@ -20,6 +20,7 @@ export const MovieSchema = z
   }));
 
 const MovieKeySchema = z.enum([
+  "movieId",
   "name",
   "runtimeInMinutes",
   "budgetInMillions",
