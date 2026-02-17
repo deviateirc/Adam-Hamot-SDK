@@ -40,7 +40,6 @@ export class LotRClient {
     let response;
     try {
       response = await body.json();
-      this.log.debug({ statusCode, response }, "Response received");
     } catch (error) {
       this.log.error(
         { statusCode, response: await body.text() },
@@ -50,7 +49,11 @@ export class LotRClient {
 
     if (statusCode !== 200) {
       this.log.error({ statusCode, response }, "Request failed");
-      throw new Error(`HTTP Error ${statusCode}: reason: ${response}`);
+      throw new Error(
+        `HTTP Error ${statusCode}: reason: ${JSON.stringify(response)}`,
+      );
+    } else {
+      this.log.info({ statusCode, response }, "Response received");
     }
 
     return response;
@@ -71,7 +74,7 @@ export class LotRClient {
 const main = async () => {
   const client = new LotRClient();
   const movie = new Movie(client);
-  const data = await movie.listMovies({ pagination: { limit: 1 } });
+  const data = await movie.listMovies({ sort: { key: "name", order: "asc" } });
   console.log(data);
 };
 
