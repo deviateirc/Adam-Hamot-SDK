@@ -1,51 +1,14 @@
 import { z } from "zod";
 import { LotRClient, logger } from "../client";
-import { ListParams, ResponseSchema, toParams } from "../schemas";
-import { QuoteSchema } from "./quote";
-
-const MovieSchema = z
-  .object({
-    _id: z.string(),
-
-    name: z.string(),
-    runtimeInMinutes: z.number(),
-    budgetInMillions: z.number(),
-    boxOfficeRevenueInMillions: z.number(),
-    academyAwardNominations: z.number(),
-    academyAwardWins: z.number(),
-    rottenTomatoesScore: z.number(),
-  })
-  .transform(({ _id, ...rest }) => ({
-    movieId: _id,
-    ...rest,
-  }));
-
-const MovieKeySchema = z.enum([
-  "movieId",
-  "name",
-  "runtimeInMinutes",
-  "budgetInMillions",
-  "boxOfficeRevenueInMillions",
-  "academyAwardNominations",
-  "academyAwardWins",
-  "rottenTomatoesScore",
-]);
-
-export type MovieKey = z.infer<typeof MovieKeySchema>;
-
-const MovieListResponseSchema = ResponseSchema.extend(
-  z.object({ docs: z.array(MovieSchema) }).shape,
-);
-
-type MovieListResponse = z.output<typeof MovieListResponseSchema>;
-
-const QuoteListResponseSchema = ResponseSchema.extend(
-  z.object({ docs: z.array(QuoteSchema) }).shape,
-);
-
-type QuoteListResponse = z.output<typeof QuoteListResponseSchema>;
-
-export interface IMovie extends z.output<typeof MovieSchema> {}
+import { ListParams, toParams } from "../schemas";
+import {
+  IMovie,
+  MovieKey,
+  MovieKeySchema,
+  MovieListResponse,
+  MovieListResponseSchema,
+} from "../schemas/movie";
+import { QuoteListResponse, QuoteListResponseSchema } from "../schemas/quote";
 
 export class Movie {
   protected baseEndpoint = "movie";

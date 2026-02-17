@@ -1,21 +1,16 @@
-import { z } from "zod";
-import { ResponseSchema } from "../schemas";
+import { LotRClient, logger } from "../client";
+import { ListParams } from "../schemas";
+import { QuoteKey } from "../schemas/quote";
 
-export const QuoteSchema = z.object({
-  // quoteId
-  _id: z.string(),
+export class Quote {
+  protected baseEndpoint = "quote";
+  private log = logger.child({ module: "Movie" });
 
-  dialog: z.string(),
-  // movieId
-  movie: z.string(),
-  // characterId
-  character: z.string(),
-  // quoteId
-  id: z.string(),
-});
+  constructor(private client: LotRClient) {}
 
-export type Quote = z.output<typeof QuoteSchema>;
+  // /quote
+  async listQuotes(listParams?: ListParams<QuoteKey>) {}
 
-const QuoteListResponseSchema = ResponseSchema.extend(
-  z.object({ docs: z.array(QuoteSchema) }).shape,
-);
+  // /quote/{id}
+  async getQuote(quoteId: string) {}
+}
