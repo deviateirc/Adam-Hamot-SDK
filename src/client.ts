@@ -7,8 +7,8 @@ config();
 
 export const logger = pino({
   name: "lotr-api",
-  level: "debug",
-  enabled: process.env.DEBUG === "true",
+  level: process.env.SDK_LOGGING_LEVEL || "info",
+  enabled: process.env.SDK_LOGGING_ENABLED === "true",
 });
 
 export class LotRClient {
@@ -45,6 +45,7 @@ export class LotRClient {
         { statusCode, response: await body.text() },
         "Failed to parse response",
       );
+      throw error;
     }
 
     if (statusCode !== 200) {
@@ -53,28 +54,20 @@ export class LotRClient {
         `HTTP Error ${statusCode}: reason: ${JSON.stringify(response)}`,
       );
     } else {
-      this.log.info({ statusCode, response }, "Response received");
+      this.log.debug({ statusCode, response }, "Response received");
     }
 
     return response;
   }
 }
 
-// list endpoints
-// pagination, sorting, filtering
-//
-// /movie
 // /quote
-// /movie/{id}/quote
-//
-// single object endpoint
-// /movie/{id}
 // /quote/{id}
 
 const main = async () => {
   const client = new LotRClient();
   const movie = new Movie(client);
-  const data = await movie.listMovies({ sort: { key: "name", order: "asc" } });
+  const data = await movie.listQuotes("5cd95395de30eff6ebccde5c");
   console.log(data);
 };
 
