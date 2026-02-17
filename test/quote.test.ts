@@ -123,10 +123,7 @@ describe("Quote", () => {
 
       const getCall = (mockClient.get as ReturnType<typeof mock.fn>).mock
         .calls[0];
-      assert.equal(
-        getCall.arguments[0],
-        "quote/5cd96e05de30eff6ebcce7e9",
-      );
+      assert.equal(getCall.arguments[0], "quote/5cd96e05de30eff6ebcce7e9");
     });
   });
 

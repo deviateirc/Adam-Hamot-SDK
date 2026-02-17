@@ -48,9 +48,7 @@ describe("Movie", () => {
 
     it("parses all movie fields correctly", async () => {
       const result = await movie.listMovies();
-      const rotk = result.docs.find(
-        (m) => m.name === "The Return of the King",
-      );
+      const rotk = result.docs.find((m) => m.name === "The Return of the King");
       assert.ok(rotk);
       assert.equal(rotk.runtimeInMinutes, 201);
       assert.equal(rotk.budgetInMillions, 94);
