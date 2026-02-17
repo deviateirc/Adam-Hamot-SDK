@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { ResponseSchema } from "..";
+import { ResponseSchema } from "../schemas";
 
 export const QuoteSchema = z.object({
   // quoteId

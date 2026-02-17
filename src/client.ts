@@ -19,10 +19,8 @@ export class LotRClient {
   }
 
   async get(endpoint: string, params: string[] = []) {
-    const encodedParams =
-      params.length > 0
-        ? `?${params.map((p) => encodeURIComponent(p)).join("&")}`
-        : "";
+    const encodedParams = params.length > 0 ? `?${params.join("&")}` : "";
+    console.log(`${LotRClient.BASE_URL}/${endpoint}${encodedParams}`);
 
     const { statusCode, body } = await request(
       `${LotRClient.BASE_URL}/${endpoint}${encodedParams}`,
@@ -32,11 +30,14 @@ export class LotRClient {
       },
     );
 
+    const rawResponse = await body.text();
+    console.log("rawResponse", rawResponse);
+
     if (statusCode !== 200) {
-      throw new Error(`Request failure: ${body.text()}`);
+      throw new Error(`HTTP Error ${statusCode}: reason: ${await body.text()}`);
     }
 
-    return body.json();
+    return rawResponse;
   }
 }
 
@@ -54,7 +55,7 @@ export class LotRClient {
 const main = async () => {
   const client = new LotRClient();
   const movie = new Movie(client);
-  const data = await movie.listMovies();
+  const data = await movie.listMovies({ pagination: { limit: 1 } });
   console.log(data);
 };
 
