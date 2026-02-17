@@ -61,9 +61,6 @@ export class LotRClient {
   }
 }
 
-// /quote
-// /quote/{id}
-
 const main = async () => {
   const client = new LotRClient();
   const movie = new Movie(client);

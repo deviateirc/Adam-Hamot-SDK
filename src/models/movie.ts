@@ -1,4 +1,4 @@
-import { LotRClient, logger } from "../client";
+import { LotRClient } from "../client";
 import { ListParams, toParams } from "../schemas";
 import {
   IMovie,
@@ -12,24 +12,23 @@ import {
   QuoteListResponse,
   QuoteListResponseSchema,
 } from "../schemas/quote";
+import { BaseModel } from "./base";
 
-export class Movie {
+export class Movie extends BaseModel<IMovie, MovieKey, MovieListResponse> {
   protected baseEndpoint = "movie";
-  private log = logger.child({ module: "Movie" });
+  protected keySchema = MovieKeySchema;
+  protected listResponseSchema = MovieListResponseSchema;
 
-  constructor(private client: LotRClient) {}
+  constructor(client: LotRClient) {
+    super(client, "Movie");
+  }
 
-  async listMovies(
-    listParams?: ListParams<MovieKey>,
-  ): Promise<MovieListResponse> {
-    this.log.info({ listParams }, "Listing movies");
-    const listResponse = await this.client.get(
-      this.baseEndpoint,
-      listParams ? toParams(listParams, MovieKeySchema) : [],
-    );
-    const response = MovieListResponseSchema.parse(listResponse);
-    this.log.info({ total: response.total }, "Movies listed");
-    return response;
+  async listMovies(listParams?: ListParams<MovieKey>): Promise<MovieListResponse> {
+    return this.list(listParams);
+  }
+
+  async getMovie(movieId: string): Promise<IMovie> {
+    return this.get(movieId);
   }
 
   async listQuotes(
@@ -44,14 +43,5 @@ export class Movie {
     const response = QuoteListResponseSchema.parse(listResponse);
     this.log.info({ total: response.total }, "Movie quotes listed");
     return response;
-  }
-
-  async getMovie(movieId: string): Promise<IMovie> {
-    this.log.info({ movieId }, "Getting movie");
-    const rawResponse = await this.client.get(
-      `${this.baseEndpoint}/${movieId}`,
-    );
-    const response = MovieListResponseSchema.parse(rawResponse);
-    return response.docs[0];
   }
 }

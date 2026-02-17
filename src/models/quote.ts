@@ -1,5 +1,5 @@
-import { LotRClient, logger } from "../client";
-import { ListParams, toParams } from "../schemas";
+import { LotRClient } from "../client";
+import { ListParams } from "../schemas";
 import {
   Quote as IQuote,
   QuoteKey,
@@ -7,32 +7,22 @@ import {
   QuoteListResponse,
   QuoteListResponseSchema,
 } from "../schemas/quote";
+import { BaseModel } from "./base";
 
-export class Quote {
+export class Quote extends BaseModel<IQuote, QuoteKey, QuoteListResponse> {
   protected baseEndpoint = "quote";
-  private log = logger.child({ module: "Quote" });
+  protected keySchema = QuoteKeySchema;
+  protected listResponseSchema = QuoteListResponseSchema;
 
-  constructor(private client: LotRClient) {}
+  constructor(client: LotRClient) {
+    super(client, "Quote");
+  }
 
-  async listQuotes(
-    listParams?: ListParams<QuoteKey>,
-  ): Promise<QuoteListResponse> {
-    this.log.info({ listParams }, "Listing quotes");
-    const listResponse = await this.client.get(
-      this.baseEndpoint,
-      listParams ? toParams(listParams, QuoteKeySchema) : [],
-    );
-    const response = QuoteListResponseSchema.parse(listResponse);
-    this.log.info({ total: response.total }, "Quotes listed");
-    return response;
+  async listQuotes(listParams?: ListParams<QuoteKey>): Promise<QuoteListResponse> {
+    return this.list(listParams);
   }
 
   async getQuote(quoteId: string): Promise<IQuote> {
-    this.log.info({ quoteId }, "Getting quote");
-    const rawResponse = await this.client.get(
-      `${this.baseEndpoint}/${quoteId}`,
-    );
-    const response = QuoteListResponseSchema.parse(rawResponse);
-    return response.docs[0];
+    return this.get(quoteId);
   }
 }
