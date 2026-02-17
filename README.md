@@ -9,8 +9,6 @@ export LOTR_API_ACCESS_TOKEN=your-api-key-123
 > [!WARNING]
 > Access for authenticated users to all endpoints is limited to 100 requests every 10 minutes. Be fair!
 
-
-
 # TODO
 
 ```

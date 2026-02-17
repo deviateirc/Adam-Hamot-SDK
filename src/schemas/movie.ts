@@ -29,7 +29,7 @@ export const MovieKeySchema = z.enum([
   "rottenTomatoesScore",
 ]);
 
-export interface IMovie extends z.output<typeof MovieSchema> {}
+export type IMovie = z.output<typeof MovieSchema>;
 
 export type MovieKey = z.infer<typeof MovieKeySchema>;
 

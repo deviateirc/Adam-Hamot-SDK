@@ -18,6 +18,7 @@ export const QuoteSchema = z
     // quoteId
     id: z.string(),
   })
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   .transform(({ _id, movie, character, id, ...rest }) => ({
     quoteId: id,
     movieId: movie,

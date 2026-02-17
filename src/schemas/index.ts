@@ -72,10 +72,11 @@ function createFilterParamsSchema(keySchema: z.ZodType<string>) {
           return `${key}`;
         case "notExists":
           return `!${key}`;
-        case "regex":
+        case "regex": {
           // TODO: Verify if i need this or need to wrap more
           const regex = new RegExp(filterValue as string);
           return `${key}=${regex.source}`;
+        }
         case "lt":
           return `${key}<${filterValue}`;
         case "lte":
@@ -126,4 +127,3 @@ export function toParams<K extends string>(
   }
   return params;
 }
-

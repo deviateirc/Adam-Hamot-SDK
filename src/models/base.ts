@@ -23,16 +23,15 @@ export abstract class BaseModel<TDoc, TKey extends string, TListResponse> {
       listParams ? toParams(listParams, this.keySchema) : [],
     );
     const response = this.listResponseSchema.parse(listResponse);
-    this.log.info({ total: (response as any).total }, "Listed");
+    const total = (response as TListResponse & { total?: number }).total;
+    this.log.info({ total }, "Listed");
     return response;
   }
 
   async get(id: string): Promise<TDoc> {
     this.log.info({ id }, "Getting");
-    const rawResponse = await this.client.get(
-      `${this.baseEndpoint}/${id}`,
-    );
+    const rawResponse = await this.client.get(`${this.baseEndpoint}/${id}`);
     const response = this.listResponseSchema.parse(rawResponse);
-    return (response as any).docs[0];
+    return (response as TListResponse & { docs: TDoc[] }).docs[0];
   }
 }

@@ -64,7 +64,10 @@ export class LotRClient {
 const main = async () => {
   const client = new LotRClient();
   const movie = new Movie(client);
-  const data = await movie.listQuotes("5cd95395de30eff6ebccde5c");
+  // TODO: Fix key name not loading by language server
+  const data = await movie.listQuotes("5cd95395de30eff6ebccde5c", {
+    sort: { key: "asdf", order: "asc" },
+  });
   console.log(data);
 };
 

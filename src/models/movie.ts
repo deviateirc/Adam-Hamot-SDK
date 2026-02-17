@@ -23,7 +23,9 @@ export class Movie extends BaseModel<IMovie, MovieKey, MovieListResponse> {
     super(client, "Movie");
   }
 
-  async listMovies(listParams?: ListParams<MovieKey>): Promise<MovieListResponse> {
+  async listMovies(
+    listParams?: ListParams<MovieKey>,
+  ): Promise<MovieListResponse> {
     return this.list(listParams);
   }
 

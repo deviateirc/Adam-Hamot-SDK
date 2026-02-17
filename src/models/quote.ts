@@ -18,7 +18,9 @@ export class Quote extends BaseModel<IQuote, QuoteKey, QuoteListResponse> {
     super(client, "Quote");
   }
 
-  async listQuotes(listParams?: ListParams<QuoteKey>): Promise<QuoteListResponse> {
+  async listQuotes(
+    listParams?: ListParams<QuoteKey>,
+  ): Promise<QuoteListResponse> {
     return this.list(listParams);
   }
 
