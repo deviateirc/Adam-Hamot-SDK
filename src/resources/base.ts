@@ -2,7 +2,7 @@ import { z } from "zod";
 import { LotRClient, logger } from "../client";
 import { KeyMap, ListParams, toParams } from "../schemas";
 
-export abstract class BaseModel<
+export abstract class BaseResource<
   TDoc,
   TKey extends string,
   TListResponse extends { docs: TDoc[]; total: number },

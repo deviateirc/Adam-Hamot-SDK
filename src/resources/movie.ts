@@ -15,12 +15,12 @@ import {
   QuoteListResponse,
   QuoteListResponseSchema,
 } from "../schemas/quote";
-import { BaseModel } from "./base";
+import { BaseResource } from "./base";
 
 /**
  * Provides access to movie data from The One API.
  */
-export class Movie extends BaseModel<IMovie, MovieKey, MovieListResponse> {
+export class Movie extends BaseResource<IMovie, MovieKey, MovieListResponse> {
   protected baseEndpoint = "movie";
   protected keySchema = MovieKeySchema;
   protected listResponseSchema = MovieListResponseSchema;

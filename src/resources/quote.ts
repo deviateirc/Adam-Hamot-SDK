@@ -8,12 +8,12 @@ import {
   QuoteListResponse,
   QuoteListResponseSchema,
 } from "../schemas/quote";
-import { BaseModel } from "./base";
+import { BaseResource } from "./base";
 
 /**
  * Provides access to quote data from The One API.
  */
-export class Quote extends BaseModel<IQuote, QuoteKey, QuoteListResponse> {
+export class Quote extends BaseResource<IQuote, QuoteKey, QuoteListResponse> {
   protected baseEndpoint = "quote";
   protected keySchema = QuoteKeySchema;
   protected listResponseSchema = QuoteListResponseSchema;

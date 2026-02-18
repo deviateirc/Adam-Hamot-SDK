@@ -1,5 +1,5 @@
 export { LotRClient, ApiError } from "./client";
-export { Movie, Quote } from "./models";
+export { Movie, Quote } from "./resources";
 export type { IMovie, MovieKey, MovieListResponse } from "./schemas/movie";
 export type {
   Quote as IQuote,

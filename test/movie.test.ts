@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { LotRClient } from "../src/client";
-import { Movie } from "../src/models/movie";
+import { Movie } from "../src/resources/movie";
 
 const movieFixture = JSON.parse(
   readFileSync(join(__dirname, "fixtures/movie.json"), "utf-8"),
