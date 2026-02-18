@@ -74,6 +74,8 @@ The following commands are available when developing this library further:
 `npm run lint` - lint the code
 `npm run format` - format code
 
+A pre-commit hook is set up running the above commands while CI/CD is not implemented.
+
 ## TODO
 
 - Set up CI/CD to automatically run lint/test/format checks.
