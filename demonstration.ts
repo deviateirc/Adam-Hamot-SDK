@@ -1,10 +1,11 @@
-import { LotRClient } from "./src/client";
-import { Movie } from "./src/models/movie";
-import { Quote } from "./src/models/quote";
+import { Movie } from "./src/resources/movie";
+import { Quote } from "./src/resources/quote";
 
-async function getById(movieModel: Movie, quoteModel: Quote) {
+import { LotRClient } from "./src/client";
+
+async function getById(movieResource: Movie, quoteResource: Quote) {
   // Movie
-  const fellowship = await movieModel.getMovie("5cd95395de30eff6ebccde5c");
+  const fellowship = await movieResource.getMovie("5cd95395de30eff6ebccde5c");
   console.log(
     "Fellowship:",
     fellowship.name,
@@ -12,7 +13,7 @@ async function getById(movieModel: Movie, quoteModel: Quote) {
   );
 
   // Quote
-  const singleQuote = await quoteModel.getQuote("5cd96e05de30eff6ebcce7e9");
+  const singleQuote = await quoteResource.getQuote("5cd96e05de30eff6ebcce7e9");
   console.log(
     "Single quote:",
     singleQuote.dialog,
@@ -21,13 +22,13 @@ async function getById(movieModel: Movie, quoteModel: Quote) {
   );
 }
 
-async function listing(movieModel: Movie, quoteModel: Quote) {
+async function listing(movieResource: Movie, quoteResource: Quote) {
   // Movie
-  const allMovies = await movieModel.listMovies();
+  const allMovies = await movieResource.listMovies();
   console.log("All movies:", allMovies.total);
 
   // Quote
-  const allQuotes = await quoteModel.listQuotes({
+  const allQuotes = await quoteResource.listQuotes({
     pagination: { limit: 5 },
   });
   console.log(
@@ -36,9 +37,9 @@ async function listing(movieModel: Movie, quoteModel: Quote) {
   );
 }
 
-async function sorting(movieModel: Movie, quoteModel: Quote) {
+async function sorting(movieResource: Movie, quoteResource: Quote) {
   // Movie: sort by name
-  const moviesSortedByName = await movieModel.listMovies({
+  const moviesSortedByName = await movieResource.listMovies({
     sort: { key: "name", order: "asc" },
   });
   console.log(
@@ -47,7 +48,7 @@ async function sorting(movieModel: Movie, quoteModel: Quote) {
   );
 
   // Quote: sort by dialog
-  const sortedQuotes = await quoteModel.listQuotes({
+  const sortedQuotes = await quoteResource.listQuotes({
     sort: { key: "dialog", order: "asc" },
     pagination: { limit: 5 },
   });
@@ -57,9 +58,9 @@ async function sorting(movieModel: Movie, quoteModel: Quote) {
   );
 }
 
-async function filtering(movieModel: Movie, quoteModel: Quote) {
+async function filtering(movieResource: Movie, quoteResource: Quote) {
   // Movie: gt
-  const bigBudgetMovies = await movieModel.listMovies({
+  const bigBudgetMovies = await movieResource.listMovies({
     filters: [{ key: "budgetInMillions", value: { gt: 200 } }],
   });
   console.log(
@@ -68,7 +69,7 @@ async function filtering(movieModel: Movie, quoteModel: Quote) {
   );
 
   // Movie: gte
-  const awardWinners = await movieModel.listMovies({
+  const awardWinners = await movieResource.listMovies({
     filters: [{ key: "academyAwardWins", value: { gte: 4 } }],
   });
   console.log(
@@ -77,7 +78,7 @@ async function filtering(movieModel: Movie, quoteModel: Quote) {
   );
 
   // Movie: lt
-  const lowScoreMovies = await movieModel.listMovies({
+  const lowScoreMovies = await movieResource.listMovies({
     filters: [{ key: "rottenTomatoesScore", value: { lt: 70 } }],
   });
   console.log(
@@ -86,10 +87,8 @@ async function filtering(movieModel: Movie, quoteModel: Quote) {
   );
 
   // Quote: eq
-  const movieQuotes = await quoteModel.listQuotes({
-    filters: [
-      { key: "movieId", value: { eq: "5cd95395de30eff6ebccde5c" } },
-    ],
+  const movieQuotes = await quoteResource.listQuotes({
+    filters: [{ key: "movieId", value: { eq: "5cd95395de30eff6ebccde5c" } }],
     pagination: { limit: 5 },
   });
   console.log(
@@ -98,10 +97,8 @@ async function filtering(movieModel: Movie, quoteModel: Quote) {
   );
 
   // Quote: ne
-  const notFellowshipQuotes = await quoteModel.listQuotes({
-    filters: [
-      { key: "movieId", value: { ne: "5cd95395de30eff6ebccde5c" } },
-    ],
+  const notFellowshipQuotes = await quoteResource.listQuotes({
+    filters: [{ key: "movieId", value: { ne: "5cd95395de30eff6ebccde5c" } }],
     pagination: { limit: 3 },
   });
   console.log(
@@ -110,15 +107,12 @@ async function filtering(movieModel: Movie, quoteModel: Quote) {
   );
 
   // Quote: include
-  const multiMovieQuotes = await quoteModel.listQuotes({
+  const multiMovieQuotes = await quoteResource.listQuotes({
     filters: [
       {
         key: "movieId",
         value: {
-          include: [
-            "5cd95395de30eff6ebccde5c",
-            "5cd95395de30eff6ebccde5d",
-          ],
+          include: ["5cd95395de30eff6ebccde5c", "5cd95395de30eff6ebccde5d"],
         },
       },
     ],
@@ -127,7 +121,7 @@ async function filtering(movieModel: Movie, quoteModel: Quote) {
   console.log("Fellowship + RotK quotes (include):", multiMovieQuotes.total);
 
   // Quote: exclude
-  const excludedMovieQuotes = await quoteModel.listQuotes({
+  const excludedMovieQuotes = await quoteResource.listQuotes({
     filters: [
       {
         key: "movieId",
@@ -142,8 +136,10 @@ async function filtering(movieModel: Movie, quoteModel: Quote) {
   );
 
   // Quote: regex
-  const regexQuotes = await quoteModel.listQuotes({
-    filters: [{ key: "dialog", value: { regex: "ring" } }],
+  const regexQuotes = await quoteResource.listQuotes({
+    filters: [
+      { key: "dialog", value: { regex: { pattern: "ring", flags: "i" } } },
+    ],
     pagination: { limit: 5 },
   });
   console.log(
@@ -152,9 +148,9 @@ async function filtering(movieModel: Movie, quoteModel: Quote) {
   );
 }
 
-async function pagination(movieModel: Movie, quoteModel: Quote) {
+async function pagination(movieResource: Movie, quoteResource: Quote) {
   // Movie: page-based page 1
-  const moviesPage1 = await movieModel.listMovies({
+  const moviesPage1 = await movieResource.listMovies({
     pagination: { limit: 3, page: 1 },
   });
   console.log(
@@ -163,7 +159,7 @@ async function pagination(movieModel: Movie, quoteModel: Quote) {
   );
 
   // Movie: page-based page 2
-  const moviesPage2 = await movieModel.listMovies({
+  const moviesPage2 = await movieResource.listMovies({
     pagination: { limit: 3, page: 2 },
   });
   console.log(
@@ -172,7 +168,7 @@ async function pagination(movieModel: Movie, quoteModel: Quote) {
   );
 
   // Movie: offset-based
-  const offsetMovies = await movieModel.listMovies({
+  const offsetMovies = await movieResource.listMovies({
     pagination: { limit: 2, offset: 4 },
   });
   console.log(
@@ -181,7 +177,7 @@ async function pagination(movieModel: Movie, quoteModel: Quote) {
   );
 
   // Quote: page-based page 1
-  const quotesPage1 = await quoteModel.listQuotes({
+  const quotesPage1 = await quoteResource.listQuotes({
     pagination: { limit: 3, page: 1 },
   });
   console.log(
@@ -190,7 +186,7 @@ async function pagination(movieModel: Movie, quoteModel: Quote) {
   );
 
   // Quote: page-based page 2
-  const quotesPage2 = await quoteModel.listQuotes({
+  const quotesPage2 = await quoteResource.listQuotes({
     pagination: { limit: 3, page: 2 },
   });
   console.log(
@@ -199,7 +195,7 @@ async function pagination(movieModel: Movie, quoteModel: Quote) {
   );
 
   // Quote: offset-based
-  const quotesOffset = await quoteModel.listQuotes({
+  const quotesOffset = await quoteResource.listQuotes({
     pagination: { limit: 3, offset: 10 },
   });
   console.log(
@@ -208,9 +204,9 @@ async function pagination(movieModel: Movie, quoteModel: Quote) {
   );
 }
 
-async function combined(movieModel: Movie, quoteModel: Quote) {
+async function combined(movieResource: Movie, quoteResource: Quote) {
   // Movie: filter + sort + pagination
-  const combinedMovies = await movieModel.listMovies({
+  const combinedMovies = await movieResource.listMovies({
     filters: [{ key: "academyAwardNominations", value: { gte: 5 } }],
     sort: { key: "boxOfficeRevenueInMillions", order: "asc" },
     pagination: { limit: 10 },
@@ -221,10 +217,8 @@ async function combined(movieModel: Movie, quoteModel: Quote) {
   );
 
   // Quote: filter + sort + pagination
-  const combinedQuotes = await quoteModel.listQuotes({
-    filters: [
-      { key: "movieId", value: { eq: "5cd95395de30eff6ebccde5d" } },
-    ],
+  const combinedQuotes = await quoteResource.listQuotes({
+    filters: [{ key: "movieId", value: { eq: "5cd95395de30eff6ebccde5d" } }],
     sort: { key: "dialog", order: "asc" },
     pagination: { limit: 10, page: 2 },
   });
@@ -234,13 +228,13 @@ async function combined(movieModel: Movie, quoteModel: Quote) {
   );
 }
 
-async function subResource(movieModel: Movie) {
+async function subResource(movieResource: Movie) {
   // List all quotes for a movie
-  const rotkQuotes = await movieModel.listQuotes("5cd95395de30eff6ebccde5d");
+  const rotkQuotes = await movieResource.listQuotes("5cd95395de30eff6ebccde5d");
   console.log("Return of the King quotes:", rotkQuotes.total);
 
   // Filtered by character
-  const rotkCharacterQuotes = await movieModel.listQuotes(
+  const rotkCharacterQuotes = await movieResource.listQuotes(
     "5cd95395de30eff6ebccde5d",
     {
       filters: [
@@ -251,7 +245,7 @@ async function subResource(movieModel: Movie) {
   console.log("RotK quotes by character:", rotkCharacterQuotes.total);
 
   // Paginated
-  const rotkQuotesPaginated = await movieModel.listQuotes(
+  const rotkQuotesPaginated = await movieResource.listQuotes(
     "5cd95395de30eff6ebccde5d",
     { pagination: { limit: 5, page: 1 } },
   );
@@ -263,16 +257,16 @@ async function subResource(movieModel: Movie) {
 
 async function main() {
   const client = new LotRClient();
-  const movieModel = new Movie(client);
-  const quoteModel = new Quote(client);
+  const movieResource = new Movie(client);
+  const quoteResource = new Quote(client);
 
-  await getById(movieModel, quoteModel);
-  await listing(movieModel, quoteModel);
-  await sorting(movieModel, quoteModel);
-  await filtering(movieModel, quoteModel);
-  await pagination(movieModel, quoteModel);
-  await combined(movieModel, quoteModel);
-  await subResource(movieModel);
+  await getById(movieResource, quoteResource);
+  await listing(movieResource, quoteResource);
+  await sorting(movieResource, quoteResource);
+  await filtering(movieResource, quoteResource);
+  await pagination(movieResource, quoteResource);
+  await combined(movieResource, quoteResource);
+  await subResource(movieResource);
 
   console.log("Demonstration complete.");
 }

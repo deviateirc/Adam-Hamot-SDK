@@ -14,6 +14,7 @@ export LOTR_API_ACCESS_TOKEN=your-api-key-123
 ### Logging
 
 To log API calls you can set the following environment variables:
+
 ```bash
 # Must be set to true in order for any logs to output
 export SDK_LOGGING_ENABLED=true
@@ -41,7 +42,7 @@ const main = async () => {
   const movieResource = new Movie(client);
 
   const movies = await movieResource.listMovies();
-  console.log('movies from API:', JSON.stringify(movies, undefined,2));
+  console.log("movies from API:", JSON.stringify(movies, undefined, 2));
 };
 
 main();
@@ -83,6 +84,7 @@ A pre-commit hook is set up running the above commands while CI/CD is not implem
 # Publishing
 
 To test publishing locally (without pushing to npm):
+
 ```bash
 # Simulate npm publish
 npm run build && npm pack
