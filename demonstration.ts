@@ -37,10 +37,11 @@ async function listing(movieResource: Movie, quoteResource: Quote) {
   );
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function sorting(movieResource: Movie, quoteResource: Quote) {
   // Movie: sort by name
   const moviesSortedByName = await movieResource.listMovies({
-    sort: { key: "name", order: "asc" },
+    sort: { key: "name", order: "desc" },
   });
   console.log(
     "Movies sorted by name:",
@@ -49,7 +50,7 @@ async function sorting(movieResource: Movie, quoteResource: Quote) {
 
   // Quote: sort by dialog
   const sortedQuotes = await quoteResource.listQuotes({
-    sort: { key: "dialog", order: "asc" },
+    sort: { key: "dialog", order: "desc" },
     pagination: { limit: 5 },
   });
   console.log(
@@ -205,25 +206,23 @@ async function pagination(movieResource: Movie, quoteResource: Quote) {
 }
 
 async function combined(movieResource: Movie, quoteResource: Quote) {
-  // Movie: filter + sort + pagination
+  // Movie: filter + pagination
   const combinedMovies = await movieResource.listMovies({
     filters: [{ key: "academyAwardNominations", value: { gte: 5 } }],
-    sort: { key: "boxOfficeRevenueInMillions", order: "asc" },
     pagination: { limit: 10 },
   });
   console.log(
-    "Nominated (gte 5) sorted by revenue:",
+    "Nominated (gte 5)",
     combinedMovies.docs.map((m) => m.name),
   );
 
-  // Quote: filter + sort + pagination
+  // Quote: filter + pagination
   const combinedQuotes = await quoteResource.listQuotes({
     filters: [{ key: "movieId", value: { eq: "5cd95395de30eff6ebccde5d" } }],
-    sort: { key: "dialog", order: "asc" },
     pagination: { limit: 10, page: 2 },
   });
   console.log(
-    "RotK quotes (filtered + sorted + page 2):",
+    "RotK quotes (filtered + page 2):",
     combinedQuotes.docs.map((q) => q.dialog),
   );
 }
@@ -262,7 +261,13 @@ async function main() {
 
   await getById(movieResource, quoteResource);
   await listing(movieResource, quoteResource);
-  await sorting(movieResource, quoteResource);
+
+  // This errors on the server for some reason, may not be compatible with movie/quote
+  // ApiError: HTTP Error 500: {"success":false,"message":"Something went wrong."}
+  // https://the-one-api.dev/v2/movie?sort=name:desc
+  //
+  // await sorting(movieResource, quoteResource);
+
   await filtering(movieResource, quoteResource);
   await pagination(movieResource, quoteResource);
   await combined(movieResource, quoteResource);
