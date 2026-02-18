@@ -16,21 +16,19 @@ type PaginationParams = {
 };
 
 const FilterValueSchema = z.union([
-  z.object({ eq: z.string() }).strict(),
-  z.object({ ne: z.string() }).strict(),
-  z.object({ include: z.array(z.string()) }).strict(),
-  z.object({ exclude: z.array(z.string()) }).strict(),
-  z.object({ exists: z.literal(true) }).strict(),
-  z.object({ notExists: z.literal(true) }).strict(),
-  z
-    .object({
-      regex: z.object({ pattern: z.string(), flags: z.string().optional() }),
-    })
-    .strict(),
-  z.object({ lt: z.number() }).strict(),
-  z.object({ lte: z.number() }).strict(),
-  z.object({ gt: z.number() }).strict(),
-  z.object({ gte: z.number() }).strict(),
+  z.strictObject({ eq: z.string() }),
+  z.strictObject({ ne: z.string() }),
+  z.strictObject({ include: z.array(z.string()) }),
+  z.strictObject({ exclude: z.array(z.string()) }),
+  z.strictObject({ exists: z.literal(true) }),
+  z.strictObject({ notExists: z.literal(true) }),
+  z.strictObject({
+    regex: z.object({ pattern: z.string(), flags: z.string().optional() }),
+  }),
+  z.strictObject({ lt: z.number() }),
+  z.strictObject({ lte: z.number() }),
+  z.strictObject({ gt: z.number() }),
+  z.strictObject({ gte: z.number() }),
 ]);
 
 export type FilterValue = z.input<typeof FilterValueSchema>;
