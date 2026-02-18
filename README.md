@@ -27,7 +27,7 @@ Logging is disabled by default.
 
 ### Compatibility
 
-This typescript package is built using node v24.13.1 and typescript 5.9.3. Developers working on this package should use the specified node version in `.nvmrc`, but this package can be installed and used by node 18+. It is advised to use the latest node LTS with this packge for maximum compatibility.
+This typescript package is built using node v24.13.1 and typescript 5.9.3. Developers working on this package should use the specified node version in `.nvmrc`, but this package can be installed and used by node 18+. It is advised to use the latest node LTS with this package for maximum compatibility.
 
 # How to Use
 
@@ -62,7 +62,7 @@ nvm use
 npm install
 
 # Set LOTR API access token
-echo "export LOTR_API_ACCESS_TOKEN=your-api-key-123" > .env
+echo "LOTR_API_ACCESS_TOKEN=your-api-key-123" > .env
 
 # Run demonstration file
 tsx --import dotenv/config demonstration.ts
