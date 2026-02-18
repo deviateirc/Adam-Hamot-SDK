@@ -15,15 +15,25 @@ type PaginationParams = {
   offset?: number;
 };
 
-function exactlyOne<T extends z.ZodRawShape>(shape: T) {
-  return z.object(shape).refine(
-    (data) => {
-      const filled = Object.values(data).filter((v) => v !== undefined);
-      return filled.length === 1;
-    },
-    { message: "Exactly one field must be provided" },
-  );
-}
+const FilterValueSchema = z.union([
+  z.object({ eq: z.string() }).strict(),
+  z.object({ ne: z.string() }).strict(),
+  z.object({ include: z.array(z.string()) }).strict(),
+  z.object({ exclude: z.array(z.string()) }).strict(),
+  z.object({ exists: z.literal(true) }).strict(),
+  z.object({ notExists: z.literal(true) }).strict(),
+  z
+    .object({
+      regex: z.object({ pattern: z.string(), flags: z.string().optional() }),
+    })
+    .strict(),
+  z.object({ lt: z.number() }).strict(),
+  z.object({ lte: z.number() }).strict(),
+  z.object({ gt: z.number() }).strict(),
+  z.object({ gte: z.number() }).strict(),
+]);
+
+export type FilterValue = z.input<typeof FilterValueSchema>;
 
 function createSortSchema(keySchema: z.ZodType<string>) {
   return z
@@ -38,21 +48,7 @@ function createFilterParamsSchema(keySchema: z.ZodType<string>) {
   return z
     .object({
       key: keySchema,
-      value: exactlyOne({
-        eq: z.string().optional(),
-        ne: z.string().optional(),
-        include: z.array(z.string()).optional(),
-        exclude: z.array(z.string()).optional(),
-        exists: z.string().optional(),
-        notExists: z.string().optional(),
-        regex: z
-          .object({ pattern: z.string(), flags: z.string().optional() })
-          .optional(),
-        lt: z.number().optional(),
-        lte: z.number().optional(),
-        gt: z.number().optional(),
-        gte: z.number().optional(),
-      }),
+      value: FilterValueSchema,
     })
     .transform((data) => {
       const key = data.key as string;
@@ -97,7 +93,7 @@ function createFilterParamsSchema(keySchema: z.ZodType<string>) {
 
 export type ListParams<K extends string = string> = {
   pagination?: PaginationParams;
-  filters?: { key: K; value: z.input<ReturnType<typeof exactlyOne>> }[];
+  filters?: { key: K; value: FilterValue }[];
 
   // Assumption: Can only sort by a single field at a time
   sort?: { key: K; order: "asc" | "desc" };
