@@ -52,7 +52,7 @@ main();
 
 For a better understanding of the library capabilities you can refer to `demonstration.ts`.
 
-The `dotenv` package as a convienence during development. You can set up your `.env` file and run the demonstration using the following commands:
+The [`dotenv`](https://www.npmjs.com/package/dotenv) package is provided as a convenience and is not used outside of testing. You can set up your `.env` file and run the demonstration using the following commands:
 
 ```bash
 # Set up node if not done already
@@ -71,15 +71,14 @@ tsx --import dotenv/config demonstration.ts
 # Development
 
 The following commands are available when developing this library further:
+
 `npm run test` - run unit tests
+
 `npm run lint` - lint the code
+
 `npm run format` - format code
 
 A pre-commit hook is set up running the above commands while CI/CD is not implemented.
-
-## TODO
-
-- Set up CI/CD to automatically run lint/test/format checks.
 
 # Publishing
 
