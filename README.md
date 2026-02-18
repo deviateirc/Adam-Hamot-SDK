@@ -1,4 +1,4 @@
-# Setup
+# Adam Hamot's "The One API SDK" Implementation
 
 ### Dependencies
 
@@ -65,7 +65,7 @@ npm install
 echo "export LOTR_API_ACCESS_TOKEN=your-api-key-123" > .env
 
 # Run demonstration file
-npx tsx --import dotenv/config demonstration.ts
+tsx --import dotenv/config demonstration.ts
 ```
 
 # Development
