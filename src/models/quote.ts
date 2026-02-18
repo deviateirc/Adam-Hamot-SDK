@@ -3,6 +3,7 @@ import { ListParams } from "../schemas";
 import {
   Quote as IQuote,
   QuoteKey,
+  QuoteKeyMap,
   QuoteKeySchema,
   QuoteListResponse,
   QuoteListResponseSchema,
@@ -16,6 +17,7 @@ export class Quote extends BaseModel<IQuote, QuoteKey, QuoteListResponse> {
   protected baseEndpoint = "quote";
   protected keySchema = QuoteKeySchema;
   protected listResponseSchema = QuoteListResponseSchema;
+  protected keyMap = QuoteKeyMap;
 
   constructor(client: LotRClient) {
     super(client, "Quote");

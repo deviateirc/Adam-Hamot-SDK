@@ -72,8 +72,9 @@ describe("Movie", () => {
         pagination: { limit: 5, page: 2 },
       });
 
-      const getCall = (mockClient.get as unknown as Mock<(...args: unknown[]) => unknown>).mock
-        .calls[0];
+      const getCall = (
+        mockClient.get as unknown as Mock<(...args: unknown[]) => unknown>
+      ).mock.calls[0];
       assert.equal(getCall.arguments[0], "movie");
       const params = getCall.arguments[1] as string[];
       assert.ok(params.includes("sort=name:asc"));
@@ -107,8 +108,9 @@ describe("Movie", () => {
 
       await movie.getMovie("5cd95395de30eff6ebccde5c");
 
-      const getCall = (mockClient.get as unknown as Mock<(...args: unknown[]) => unknown>).mock
-        .calls[0];
+      const getCall = (
+        mockClient.get as unknown as Mock<(...args: unknown[]) => unknown>
+      ).mock.calls[0];
       assert.equal(getCall.arguments[0], "movie/5cd95395de30eff6ebccde5c");
     });
   });
@@ -139,8 +141,9 @@ describe("Movie", () => {
 
       await movie.listQuotes("5cd95395de30eff6ebccde5d");
 
-      const getCall = (mockClient.get as unknown as Mock<(...args: unknown[]) => unknown>).mock
-        .calls[0];
+      const getCall = (
+        mockClient.get as unknown as Mock<(...args: unknown[]) => unknown>
+      ).mock.calls[0];
       assert.equal(
         getCall.arguments[0],
         "movie/5cd95395de30eff6ebccde5d/quote",

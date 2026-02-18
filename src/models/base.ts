@@ -1,11 +1,16 @@
 import { z } from "zod";
 import { LotRClient, logger } from "../client";
-import { ListParams, toParams } from "../schemas";
+import { KeyMap, ListParams, toParams } from "../schemas";
 
-export abstract class BaseModel<TDoc, TKey extends string, TListResponse> {
+export abstract class BaseModel<
+  TDoc,
+  TKey extends string,
+  TListResponse extends { docs: TDoc[]; total: number },
+> {
   protected abstract baseEndpoint: string;
   protected abstract keySchema: z.ZodType<TKey>;
   protected abstract listResponseSchema: z.ZodType<TListResponse>;
+  protected abstract keyMap: KeyMap<TKey>;
 
   protected log;
 
@@ -20,11 +25,10 @@ export abstract class BaseModel<TDoc, TKey extends string, TListResponse> {
     this.log.info({ listParams }, "Listing");
     const listResponse = await this.client.get(
       this.baseEndpoint,
-      listParams ? toParams(listParams, this.keySchema) : [],
+      listParams ? toParams(listParams, this.keySchema, this.keyMap) : [],
     );
     const response = this.listResponseSchema.parse(listResponse);
-    const total = (response as TListResponse & { total?: number }).total;
-    this.log.info({ total }, "Listed");
+    this.log.info({ total: response.total }, "Listed");
     return response;
   }
 
@@ -32,6 +36,10 @@ export abstract class BaseModel<TDoc, TKey extends string, TListResponse> {
     this.log.info({ id }, "Getting");
     const rawResponse = await this.client.get(`${this.baseEndpoint}/${id}`);
     const response = this.listResponseSchema.parse(rawResponse);
-    return (response as TListResponse & { docs: TDoc[] }).docs[0];
+    const doc = response.docs[0];
+    if (!doc) {
+      throw new Error(`${this.baseEndpoint}/${id} not found`);
+    }
+    return doc;
   }
 }

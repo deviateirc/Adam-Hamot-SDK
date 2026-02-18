@@ -29,6 +29,10 @@ export const MovieKeySchema = z.enum([
   "rottenTomatoesScore",
 ]);
 
+export const MovieKeyMap: Partial<Record<MovieKey, string>> = {
+  movieId: "_id",
+};
+
 export type IMovie = z.output<typeof MovieSchema>;
 
 export type MovieKey = z.infer<typeof MovieKeySchema>;

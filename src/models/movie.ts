@@ -3,11 +3,14 @@ import { ListParams, toParams } from "../schemas";
 import {
   IMovie,
   MovieKey,
+  MovieKeyMap,
   MovieKeySchema,
   MovieListResponse,
   MovieListResponseSchema,
 } from "../schemas/movie";
 import {
+  QuoteKey,
+  QuoteKeyMap,
   QuoteKeySchema,
   QuoteListResponse,
   QuoteListResponseSchema,
@@ -21,6 +24,7 @@ export class Movie extends BaseModel<IMovie, MovieKey, MovieListResponse> {
   protected baseEndpoint = "movie";
   protected keySchema = MovieKeySchema;
   protected listResponseSchema = MovieListResponseSchema;
+  protected keyMap = MovieKeyMap;
 
   constructor(client: LotRClient) {
     super(client, "Movie");
@@ -51,12 +55,12 @@ export class Movie extends BaseModel<IMovie, MovieKey, MovieListResponse> {
    */
   async listQuotes(
     movieId: string,
-    listParams?: ListParams,
+    listParams?: ListParams<QuoteKey>,
   ): Promise<QuoteListResponse> {
     this.log.info({ movieId, listParams }, "Listing movie quotes");
     const listResponse = await this.client.get(
       `${this.baseEndpoint}/${movieId}/quote`,
-      listParams ? toParams(listParams, QuoteKeySchema) : [],
+      listParams ? toParams(listParams, QuoteKeySchema, QuoteKeyMap) : [],
     );
     const response = QuoteListResponseSchema.parse(listResponse);
     this.log.info({ total: response.total }, "Movie quotes listed");

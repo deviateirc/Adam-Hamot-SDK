@@ -7,6 +7,16 @@ export const logger = pino({
   enabled: process.env.SDK_LOGGING_ENABLED === "true",
 });
 
+export class ApiError extends Error {
+  constructor(
+    public readonly statusCode: number,
+    public readonly body: unknown,
+  ) {
+    super(`HTTP Error ${statusCode}: ${JSON.stringify(body)}`);
+    this.name = "ApiError";
+  }
+}
+
 /**
  * HTTP client for The One API (https://the-one-api.dev).
  * Handles authentication and request execution for all API endpoints.
@@ -47,14 +57,16 @@ export class LotRClient {
     const { statusCode, body } = await request(url, {
       method: "GET",
       headers: { Authorization: `Bearer ${this.accessToken}` },
+      signal: AbortSignal.timeout(30_000),
     });
 
-    let response;
+    const text = await body.text();
+    let response: unknown;
     try {
-      response = await body.json();
+      response = JSON.parse(text);
     } catch (error) {
       this.log.error(
-        { statusCode, response: await body.text() },
+        { statusCode, response: text },
         "Failed to parse response",
       );
       throw error;
@@ -62,9 +74,7 @@ export class LotRClient {
 
     if (statusCode !== 200) {
       this.log.error({ statusCode, response }, "Request failed");
-      throw new Error(
-        `HTTP Error ${statusCode}: reason: ${JSON.stringify(response)}`,
-      );
+      throw new ApiError(statusCode, response);
     } else {
       this.log.debug({ statusCode, response }, "Response received");
     }

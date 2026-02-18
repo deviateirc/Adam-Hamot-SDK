@@ -35,23 +35,34 @@ const FilterValueSchema = z.union([
 
 export type FilterValue = z.input<typeof FilterValueSchema>;
 
-function createSortSchema(keySchema: z.ZodType<string>) {
+export type KeyMap<K extends string> = Partial<Record<K, string>>;
+
+function createSortSchema(
+  keySchema: z.ZodType<string>,
+  keyMap: KeyMap<string>,
+) {
   return z
     .object({
       key: keySchema,
-      order: z.literal("asc", "desc"),
+      order: z.enum(["asc", "desc"]),
     })
-    .transform((data) => `sort=${data.key}:${data.order}`);
+    .transform((data) => {
+      const apiKey = keyMap[data.key] ?? data.key;
+      return `sort=${apiKey}:${data.order}`;
+    });
 }
 
-function createFilterParamsSchema(keySchema: z.ZodType<string>) {
+function createFilterParamsSchema(
+  keySchema: z.ZodType<string>,
+  keyMap: KeyMap<string>,
+) {
   return z
     .object({
       key: keySchema,
       value: FilterValueSchema,
     })
     .transform((data) => {
-      const key = data.key as string;
+      const key = keyMap[data.key as string] ?? (data.key as string);
       const [filterField, filterValue] = Object.entries(data.value).find(
         ([, v]) => v !== undefined,
       )!;
@@ -102,9 +113,10 @@ export type ListParams<K extends string = string> = {
 export function toParams<K extends string>(
   listParams: ListParams<K>,
   keySchema: z.ZodType<K>,
+  keyMap: KeyMap<K> = {},
 ): string[] {
-  const sortSchema = createSortSchema(keySchema);
-  const filterParamsSchema = createFilterParamsSchema(keySchema);
+  const sortSchema = createSortSchema(keySchema, keyMap);
+  const filterParamsSchema = createFilterParamsSchema(keySchema, keyMap);
 
   const filters =
     listParams.filters?.map((f) => filterParamsSchema.parse(f)) || [];

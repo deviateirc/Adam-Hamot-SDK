@@ -69,11 +69,15 @@ describe("Quote", () => {
         ],
       });
 
-      const getCall = (mockClient.get as unknown as Mock<(...args: unknown[]) => unknown>).mock
-        .calls[0];
+      const getCall = (
+        mockClient.get as unknown as Mock<(...args: unknown[]) => unknown>
+      ).mock.calls[0];
       assert.equal(getCall.arguments[0], "quote");
       const params = getCall.arguments[1] as string[];
-      assert.ok(params.includes("movieId=5cd95395de30eff6ebccde5d"));
+      assert.ok(
+        params.includes("movie=5cd95395de30eff6ebccde5d"),
+        `expected movie= param, got: ${params}`,
+      );
     });
 
     it("passes sort params to client", async () => {
@@ -84,8 +88,9 @@ describe("Quote", () => {
         sort: { key: "dialog", order: "asc" },
       });
 
-      const getCall = (mockClient.get as unknown as Mock<(...args: unknown[]) => unknown>).mock
-        .calls[0];
+      const getCall = (
+        mockClient.get as unknown as Mock<(...args: unknown[]) => unknown>
+      ).mock.calls[0];
       const params = getCall.arguments[1] as string[];
       assert.ok(params.includes("sort=dialog:asc"));
     });
@@ -118,8 +123,9 @@ describe("Quote", () => {
 
       await quote.getQuote("5cd96e05de30eff6ebcce7e9");
 
-      const getCall = (mockClient.get as unknown as Mock<(...args: unknown[]) => unknown>).mock
-        .calls[0];
+      const getCall = (
+        mockClient.get as unknown as Mock<(...args: unknown[]) => unknown>
+      ).mock.calls[0];
       assert.equal(getCall.arguments[0], "quote/5cd96e05de30eff6ebcce7e9");
     });
   });

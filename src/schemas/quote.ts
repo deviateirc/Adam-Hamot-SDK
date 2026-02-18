@@ -35,6 +35,12 @@ export const QuoteKeySchema = z.enum([
 
 export type QuoteKey = z.infer<typeof QuoteKeySchema>;
 
+export const QuoteKeyMap: Partial<Record<QuoteKey, string>> = {
+  quoteId: "id",
+  movieId: "movie",
+  characterId: "character",
+};
+
 export type Quote = z.output<typeof QuoteSchema>;
 
 export const QuoteListResponseSchema = ResponseSchema.extend(
