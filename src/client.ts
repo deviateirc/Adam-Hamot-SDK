@@ -1,8 +1,5 @@
-import { config } from "dotenv";
 import pino from "pino";
 import { request } from "undici";
-
-config();
 
 export const logger = pino({
   name: "lotr-api",
@@ -10,11 +7,27 @@ export const logger = pino({
   enabled: process.env.SDK_LOGGING_ENABLED === "true",
 });
 
+/**
+ * HTTP client for The One API (https://the-one-api.dev).
+ * Handles authentication and request execution for all API endpoints.
+ *
+ * Supported environment variables:
+ * - SDK_LOGGING_LEVEL
+ *   - Use any pino supported log level
+ * - SDK_LOGGING_ENABLED
+ *   - Enable logging output
+ * - LOTR_API_ACCESS_TOKEN
+ *   - *required* Access token
+ */
 export class LotRClient {
   private accessToken: string;
   private log = logger.child({ module: "LotRClient" });
   static BASE_URL = "https://the-one-api.dev/v2";
 
+  /**
+   * @param accessToken - API access token. Falls back to the `LOTR_API_ACCESS_TOKEN` environment variable if not provided.
+   * @throws If no access token is found.
+   */
   constructor(accessToken?: string) {
     const token = accessToken ?? process.env.LOTR_API_ACCESS_TOKEN;
     if (!token) {

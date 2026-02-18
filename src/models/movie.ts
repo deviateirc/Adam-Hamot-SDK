@@ -14,6 +14,9 @@ import {
 } from "../schemas/quote";
 import { BaseModel } from "./base";
 
+/**
+ * Provides access to movie data from The One API.
+ */
 export class Movie extends BaseModel<IMovie, MovieKey, MovieListResponse> {
   protected baseEndpoint = "movie";
   protected keySchema = MovieKeySchema;
@@ -23,16 +26,29 @@ export class Movie extends BaseModel<IMovie, MovieKey, MovieListResponse> {
     super(client, "Movie");
   }
 
+  /**
+   * Lists movies with optional sorting, filtering, and pagination.
+   * @param listParams - Optional parameters for sorting, filtering, and pagination.
+   */
   async listMovies(
     listParams?: ListParams<MovieKey>,
   ): Promise<MovieListResponse> {
     return this.list(listParams);
   }
 
+  /**
+   * Fetches a single movie by its ID.
+   * @param movieId - The movie's unique identifier.
+   */
   async getMovie(movieId: string): Promise<IMovie> {
     return this.get(movieId);
   }
 
+  /**
+   * Lists quotes for a specific movie with optional sorting, filtering, and pagination.
+   * @param movieId - The movie's unique identifier.
+   * @param listParams - Optional parameters for sorting, filtering, and pagination.
+   */
   async listQuotes(
     movieId: string,
     listParams?: ListParams,

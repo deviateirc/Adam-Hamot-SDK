@@ -5,8 +5,8 @@ export const ResponseSchema = z.object({
   total: z.number(),
   limit: z.number(),
   offset: z.number().optional(),
-  page: z.number(),
-  pages: z.number(),
+  page: z.number().optional(),
+  pages: z.number().optional(),
 });
 
 type PaginationParams = {
@@ -45,8 +45,9 @@ function createFilterParamsSchema(keySchema: z.ZodType<string>) {
         exclude: z.array(z.string()).optional(),
         exists: z.string().optional(),
         notExists: z.string().optional(),
-        // TODO: Figure out if need to be url encoded?
-        regex: z.string().optional(),
+        regex: z
+          .object({ pattern: z.string(), flags: z.string().optional() })
+          .optional(),
         lt: z.number().optional(),
         lte: z.number().optional(),
         gt: z.number().optional(),
@@ -73,9 +74,12 @@ function createFilterParamsSchema(keySchema: z.ZodType<string>) {
         case "notExists":
           return `!${key}`;
         case "regex": {
-          // TODO: Verify if i need this or need to wrap more
-          const regex = new RegExp(filterValue as string);
-          return `${key}=${regex.source}`;
+          const { pattern, flags } = filterValue as {
+            pattern: string;
+            flags?: string;
+          };
+          const regex = new RegExp(pattern, flags);
+          return `${key}=${regex}`;
         }
         case "lt":
           return `${key}<${filterValue}`;
